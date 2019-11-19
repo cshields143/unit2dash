@@ -12,6 +12,7 @@ gunicorn = "*"
 plotly = "*"
 pandas = "*"
 sklearn= "*"
+joblib = "*"
 
 [requires]
 python_version = "3"
