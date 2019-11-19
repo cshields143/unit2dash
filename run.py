@@ -1,5 +1,6 @@
 # Imports from 3rd party libraries
 import dash
+from dash.dependencies import Input, Output, State
 import dash_bootstrap_components as dbc
 import dash_core_components as dcc
 import dash_html_components as html
@@ -71,9 +72,38 @@ def display_page(pathname):
 
 # Generate prediction from input data
 @app.callback(Output('final-result', 'children'),
-              [Input('party-started', 'n_clicks_timestamp')])
-def calc_pred(_):
-    return html.P(_)
+              [Input('party-started', 'n_clicks')],
+              [
+                State('in-season', 'value'),
+                State('in-game', 'value'),
+                State('in-comps', 'value'),
+                State('in-atts', 'value'),
+                State('in-sacks', 'value'),
+                State('in-carries', 'value'),
+                State('in-pyds', 'value'),
+                State('in-syds', 'value'),
+                State('in-ryds', 'value'),
+                State('in-ptds', 'value'),
+                State('in-ints', 'value'),
+                State('in-rtds', 'value'),
+                State('in-fum', 'value')
+              ])
+def calc_pred(_, seas, game, cmps, att, sacks, carries, pyds, syds, ryds, ptds, ints, rtds, fums):
+    return html.Div([
+        html.P(f'Season: {seas}'),
+        html.P(f'Game: {game}'),
+        html.P(f'Completions: {cmps}'),
+        html.P(f'Attempts: {att}'),
+        html.P(f'Sacks: {sacks}'),
+        html.P(f'Carries: {carries}'),
+        html.P(f'Pass Yards: {pyds}'),
+        html.P(f'Sack Yards: {syds}'),
+        html.P(f'Rush Yards: {ryds}'),
+        html.P(f'Pass TDs: {ptds}'),
+        html.P(f'Interceptions: {ints}'),
+        html.P(f'Rush TDs: {rtds}'),
+        html.P(f'Fumbles: {fums}')
+    ])
 
 # Run app server: https://dash.plot.ly/getting-started
 if __name__ == '__main__':
