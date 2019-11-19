@@ -103,15 +103,15 @@ def calc_pred(_, seas, game, cmps, att, sacks, carries, pyds, syds, ryds, ptds, 
     pred = model.predict([[netper, netatt, netyds, nya, carries, ryds, ypc, tds, tos]])[0]
     return dbc.Col([
         dcc.Markdown(f'''
-            - Net Cmp%: {netper}
-            - Net Pass Attempts: {netatt}
-            - Net Pass Yards: {netyds}
-            - Net Yards / Attempt: {nya}
-            - Rush Attempts: {carries}
-            - Rush Yards: {ryds}
-            - Yards / Carry: {ypc}
-            - Touchdowns: {tds}
-            - Turnovers: {tos}
+            - **Net Cmp%** {netper * 100:.2f}%
+            - **Net Pass Attempts** {netatt}
+            - **Net Pass Yards** {netyds}
+            - **Net Yards / Attempt** {nya:.2f}
+            - **Rush Attempts** {carries}
+            - **Rush Yards** {ryds}
+            - **Yards / Carry** {ypc:.2f}
+            - **Touchdowns** {tds}
+            - **Turnovers** {tos}
         '''),
         html.Div(pred, style={'font-size':'48px', 'font-weight':'bold', 'color':'red', 'text-transform':'uppercase'})
     ])
