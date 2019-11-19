@@ -69,6 +69,12 @@ def display_page(pathname):
     else:
         return dcc.Markdown('## Page not found')
 
+# Generate prediction from input data
+@app.callback(Output('final-result', 'children'),
+              [Input('party-started', 'n_clicks_timestamp')])
+def calc_pred(_):
+    return html.P(_)
+
 # Run app server: https://dash.plot.ly/getting-started
 if __name__ == '__main__':
     model = joblib.load('./rfc.pkl')

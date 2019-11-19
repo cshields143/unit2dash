@@ -35,7 +35,7 @@ column1 = dbc.Col(
         dcc.Input(type='number', placeholder='INTS'),
         dcc.Input(type='number', placeholder='RUSH TDS'),
         dcc.Input(type='number', placeholder='FUM'),
-        html.Button('GUESS!')
+        html.Button('GUESS!', id='party-started')
         #dcc.Link(dbc.Button('Your Call To Action', color='primary'), href='/predictions')
     ],
     md=4,
@@ -45,10 +45,10 @@ column1 = dbc.Col(
 #fig = px.scatter(gapminder.query("year==2007"), x="gdpPercap", y="lifeExp", size="pop", color="continent",
 #           hover_name="country", log_x=True, size_max=60)
 
-#column2 = dbc.Col(
-#    [
-#        dcc.Graph(figure=fig),
-#    ]
-#)
+column2 = dbc.Col(
+    [
+        html.Div(id='final-result')
+    ]
+)
 
-layout = dbc.Row([column1])
+layout = dbc.Row([column1, column2])
