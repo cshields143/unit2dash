@@ -100,16 +100,20 @@ def calc_pred(_, seas, game, cmps, att, sacks, carries, pyds, syds, ryds, ptds, 
     ypc = ryds / carries
     tds = ptds + rtds
     tos = ints + fums
-    return html.Div([
-        html.P(f'Net Cmp%: {netper}'),
-        html.P(f'Net Pass Attempts: {netatt}'),
-        html.P(f'Net Pass Yards: {netyds}'),
-        html.P(f'Net Yards / Attempt: {nya}'),
-        html.P(f'Rush Attempts: {carries}'),
-        html.P(f'Rush Yards: {ryds}'),
-        html.P(f'Yards / Carry: {ypc}'),
-        html.P(f'Touchdowns: {tds}'),
-        html.P(f'Turnovers: {tos}')
+    pred = model.predict([[netper, netatt, netyds, nya, carries, ryds, ypc, tds, tos]])[0]
+    return dbc.Col([
+        dcc.Markdown(f'''
+            - Net Cmp%: {netper}
+            - Net Pass Attempts: {netatt}
+            - Net Pass Yards: {netyds}
+            - Net Yards / Attempt: {nya}
+            - Rush Attempts: {carries}
+            - Rush Yards: {ryds}
+            - Yards / Carry: {ypc}
+            - Touchdowns: {tds}
+            - Turnovers: {tos}
+        '''),
+        html.Div(pred, style={'font-size':'48px', 'font-weight':'bold', 'color':'red', 'text-transform':'uppercase'})
     ])
 
 # Run app server: https://dash.plot.ly/getting-started
