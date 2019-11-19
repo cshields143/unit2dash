@@ -89,20 +89,27 @@ def display_page(pathname):
                 State('in-fum', 'value')
               ])
 def calc_pred(_, seas, game, cmps, att, sacks, carries, pyds, syds, ryds, ptds, ints, rtds, fums):
+    if _ == None: return
+    game_as_quint = (game + 1) // 5
+    season_offset = (seas - 2004) * 5
+    quint = game_as_quint + season_offset
+    netatt = att + sacks
+    netper = cmps / netatt
+    netyds = pyds - syds
+    nya = netyds / netatt
+    ypc = ryds / carries
+    tds = ptds + rtds
+    tos = ints + fums
     return html.Div([
-        html.P(f'Season: {seas}'),
-        html.P(f'Game: {game}'),
-        html.P(f'Completions: {cmps}'),
-        html.P(f'Attempts: {att}'),
-        html.P(f'Sacks: {sacks}'),
-        html.P(f'Carries: {carries}'),
-        html.P(f'Pass Yards: {pyds}'),
-        html.P(f'Sack Yards: {syds}'),
+        html.P(f'Net Cmp%: {netper}'),
+        html.P(f'Net Pass Attempts: {netatt}'),
+        html.P(f'Net Pass Yards: {netyds}'),
+        html.P(f'Net Yards / Attempt: {nya}'),
+        html.P(f'Rush Attempts: {carries}'),
         html.P(f'Rush Yards: {ryds}'),
-        html.P(f'Pass TDs: {ptds}'),
-        html.P(f'Interceptions: {ints}'),
-        html.P(f'Rush TDs: {rtds}'),
-        html.P(f'Fumbles: {fums}')
+        html.P(f'Yards / Carry: {ypc}'),
+        html.P(f'Touchdowns: {tds}'),
+        html.P(f'Turnovers: {tos}')
     ])
 
 # Run app server: https://dash.plot.ly/getting-started
