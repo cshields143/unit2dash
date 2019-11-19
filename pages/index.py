@@ -16,29 +16,39 @@ column1 = dbc.Col(
         dcc.Markdown(
             """
         
-            ## Your Value Proposition
+            ## Predict the QB from the Game
 
-            Emphasize how the app will benefit users. Don't emphasize the underlying technology.
-
-            ✅ RUN is a running app that adapts to your fitness levels and designs personalized workouts to help you improve your running.
-
-            ❌ RUN is the only intelligent running app that uses sophisticated deep neural net machine learning to make your run smarter because we believe in ML driven workouts.
+            This app will probably not benefit you. But it *does* incorporate machine learning, so yeah.
 
             """
         ),
-        dcc.Link(dbc.Button('Your Call To Action', color='primary'), href='/predictions')
+        dcc.Input(type='number', placeholder='SEASON'),
+        dcc.Input(type='number', placeholder='GAME'),
+        dcc.Input(type='number', placeholder='CMP'),
+        dcc.Input(type='number', placeholder='ATT'),
+        dcc.Input(type='number', placeholder='SACKS'),
+        dcc.Input(type='number', placeholder='CARRIES'),
+        dcc.Input(type='number', placeholder='PASS YDS'),
+        dcc.Input(type='number', placeholder='SACK YDS'),
+        dcc.Input(type='number', placeholder='RUSH YDS'),
+        dcc.Input(type='number', placeholder='PASS TDS'),
+        dcc.Input(type='number', placeholder='INTS'),
+        dcc.Input(type='number', placeholder='RUSH TDS'),
+        dcc.Input(type='number', placeholder='FUM'),
+        html.Button('GUESS!')
+        #dcc.Link(dbc.Button('Your Call To Action', color='primary'), href='/predictions')
     ],
     md=4,
 )
 
-gapminder = px.data.gapminder()
-fig = px.scatter(gapminder.query("year==2007"), x="gdpPercap", y="lifeExp", size="pop", color="continent",
-           hover_name="country", log_x=True, size_max=60)
+#gapminder = px.data.gapminder()
+#fig = px.scatter(gapminder.query("year==2007"), x="gdpPercap", y="lifeExp", size="pop", color="continent",
+#           hover_name="country", log_x=True, size_max=60)
 
-column2 = dbc.Col(
-    [
-        dcc.Graph(figure=fig),
-    ]
-)
+#column2 = dbc.Col(
+#    [
+#        dcc.Graph(figure=fig),
+#    ]
+#)
 
-layout = dbc.Row([column1, column2])
+layout = dbc.Row([column1])

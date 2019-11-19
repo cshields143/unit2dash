@@ -4,10 +4,11 @@ import dash_bootstrap_components as dbc
 import dash_core_components as dcc
 import dash_html_components as html
 from dash.dependencies import Input, Output
+from sklearn.externals import joblib
 
 # Imports from this application
 from app import app, server
-from pages import index, predictions, insights, process
+from pages import index
 
 # Navbar docs: https://dash-bootstrap-components.opensource.faculty.ai/l/components/navbar
 navbar = dbc.NavbarSimple(
@@ -65,15 +66,10 @@ app.layout = html.Div([
 def display_page(pathname):
     if pathname == '/':
         return index.layout
-    elif pathname == '/predictions':
-        return predictions.layout
-    elif pathname == '/insights':
-        return insights.layout
-    elif pathname == '/process':
-        return process.layout
     else:
         return dcc.Markdown('## Page not found')
 
 # Run app server: https://dash.plot.ly/getting-started
 if __name__ == '__main__':
+    model = joblib.load('./rfc.pkl')
     app.run_server(debug=True)
