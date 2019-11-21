@@ -6,6 +6,7 @@ import dash_core_components as dcc
 import dash_html_components as html
 from dash.dependencies import Input, Output
 import joblib
+import pandas as pd
 
 # Imports from this application
 from app import app, server
@@ -73,28 +74,26 @@ def display_page(pathname):
         return dcc.Markdown('## Page not found')
 
 # Generate prediction from input data
-@app.callback(Output('final-result', 'children'),
-              [Input('party-started', 'n_clicks')],
+@app.callback(Output('manual-output', 'children'),
+              [Input('trigger-manual-prediction', 'n_clicks')],
               [
-                State('in-season', 'value'),
-                State('in-game', 'value'),
-                State('in-comps', 'value'),
-                State('in-atts', 'value'),
-                State('in-sacks', 'value'),
-                State('in-carries', 'value'),
-                State('in-pyds', 'value'),
-                State('in-syds', 'value'),
-                State('in-ryds', 'value'),
-                State('in-ptds', 'value'),
-                State('in-ints', 'value'),
-                State('in-rtds', 'value'),
-                State('in-fum', 'value')
+                State('season-input', 'value'),
+                State('completions-input', 'value'),
+                State('passatt-input', 'value'),
+                State('sacks-input', 'value'),
+                State('rushatt-input', 'value'),
+                State('passyards-input', 'value'),
+                State('sackyards-input', 'value'),
+                State('rushyards-input', 'value'),
+                State('passtds-input', 'value'),
+                State('ints-input', 'value'),
+                State('rushtds-input', 'value'),
+                State('fum-input', 'value')
               ])
-def calc_pred(_, seas, game, cmps, att, sacks, carries, pyds, syds, ryds, ptds, ints, rtds, fums):
+def calc_pred(_, seas, cmps, att, sacks, carries, pyds, syds, ryds, ptds, ints, rtds, fums):
     if _ == None: return
-    game_as_quint = (game + 1) // 5
-    season_offset = (seas - 2004) * 5
-    quint = game_as_quint + season_offset
+    
+    # "advanced" stats
     netatt = att + sacks
     netper = cmps / netatt
     netyds = pyds - syds
@@ -102,23 +101,78 @@ def calc_pred(_, seas, game, cmps, att, sacks, carries, pyds, syds, ryds, ptds, 
     ypc = ryds / carries
     tds = ptds + rtds
     tos = ints + fums
-    pred = model.predict([[netper, netatt, netyds, nya, carries, ryds, ypc, tds, tos]])[0]
-    return dbc.Col([
-        dcc.Markdown(f'''
-            - **Net Cmp%** {netper * 100:.2f}%
-            - **Net Pass Attempts** {netatt}
-            - **Net Pass Yards** {netyds}
-            - **Net Yards / Attempt** {nya:.2f}
-            - **Rush Attempts** {carries}
-            - **Rush Yards** {ryds}
-            - **Yards / Carry** {ypc:.2f}
-            - **Touchdowns** {tds}
-            - **Turnovers** {tos}
-        '''),
-        html.Div(pred, style={'font-size':'48px', 'font-weight':'bold', 'color':'red', 'text-transform':'uppercase'})
+    touches = netatt + carries
+    td_touch = tds / touches
+    to_touch = tos / touches
+
+    # standardize stats by league year
+    i = [k for k in league_norm['year'] if league_norm['year'][k] == seas][0]
+    touch_z = (touches - league_norm['touches-mean'][i]) / league_norm['touches-std'][i]
+    netper_z = (netper - league_norm['net%-mean'][i]) / league_norm['net%-std'][i]
+    nya_z = (nya - league_norm['ny/a-mean'][i]) / league_norm['ny/a-std'][i]
+    ypc_z = (ypc - league_norm['ypc-mean'][i]) / league_norm['ypc-std'][i]
+    td_touch_z = (td_touch - league_norm['td:touch-mean'][i]) / league_norm['td:touch-std'][i]
+    to_touch_z = (to_touch - league_norm['to:touch-mean'][i]) / league_norm['to:touch-std'][i]
+
+    # get predictions
+    X = [[touch_z, netper_z, nya_z, ypc_z, td_touch_z, to_touch_z]]
+    tom_pred = model_maj.predict(X)[0]
+    dick_pred = model_rfc.predict(X)[0]
+
+    # construct output
+    outputform = dbc.Col([
+      html.Div([
+        html.Span('Tom:'),
+        html.Span(' '),
+        html.Span(tom_pred,
+          id='tom-output',
+          style={
+            'color':'red'
+          }
+        )
+      ], style={
+        'font-size':'2.5em',
+        'font-weight':'bold',
+        'text-transform':'uppercase',
+        'margin-bottom':'0.5em',
+        'margin-top':'1em'
+      }),
+      html.Div([
+        html.Span('Dick:'),
+        html.Span(' '),
+        html.Span(dick_pred,
+          id='dick-output',
+          style={
+            'color':'green'
+          }
+        )
+      ], style={
+        'font-size':'2.5em',
+        'font-weight':'bold',
+        'text-transform':'uppercase',
+        'margin-bottom':'0.5em'
+      }),
+      html.Div([
+        html.Span('Harry:'),
+        html.Span(' '),
+        html.Span('Ryan Fitzpatrick',
+          id='harry-output',
+          style={
+            'color':'blue'
+          }
+        )
+      ], style={
+        'font-size':'2.5em',
+        'font-weight':'bold',
+        'text-transform':'uppercase',
+        'margin-bottom':'0.5em'
+      })
     ])
+    return outputform
 
 # Run app server: https://dash.plot.ly/getting-started
 if __name__ == '__main__':
-    #model = joblib.load('./rfc.pkl')
+    model_maj = joblib.load('./majority.pkl')
+    model_rfc = joblib.load('./randomforest.pkl')
+    league_norm = pd.read_csv('./years.txt').to_dict()
     app.run_server(debug=True)
