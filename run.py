@@ -61,6 +61,17 @@ app.layout = html.Div([
     footer
 ])
 
+qbs = ['Drew Brees', 'Eli Manning', 'Tom Brady', 'Philip Rivers', 'Ben Roethlisberger',
+        'Carson Palmer', 'Matt Ryan', 'Aaron Rodgers', 'Joe Flacco', 'Peyton Manning',
+        'Alex Smith', 'Jay Cutler', 'Matthew Stafford', 'Ryan Fitzpatrick',
+        'Matt Hasselbeck', 'Tony Romo', 'Andy Dalton', 'Cam Newton', 'Russell Wilson',
+        'Matt Schaub', 'Michael Vick', 'Brett Favre', 'Matt Cassel']
+
+model_maj = joblib.load('./majority.pkl')
+model_rfc = joblib.load('./randomforest.pkl')
+league_norm = pd.read_csv('./years.txt').to_dict()
+lr_models = {qb:joblib.load(f'./{qb.replace(" ","")}-lr.pkl') for qb in qbs}
+
 def standardize(val, name, d, i):
     return (val - d[f'{name}-mean'][i]) / d[f'{name}-std'][i]
 
@@ -193,15 +204,6 @@ def calc_pred(_, seas, cmps, att, sacks, carries, pyds, syds, ryds, ptds, ints, 
     return outputform
 
 # Run app server: https://dash.plot.ly/getting-started
-qbs = ['Drew Brees', 'Eli Manning', 'Tom Brady', 'Philip Rivers', 'Ben Roethlisberger',
-        'Carson Palmer', 'Matt Ryan', 'Aaron Rodgers', 'Joe Flacco', 'Peyton Manning',
-        'Alex Smith', 'Jay Cutler', 'Matthew Stafford', 'Ryan Fitzpatrick',
-        'Matt Hasselbeck', 'Tony Romo', 'Andy Dalton', 'Cam Newton', 'Russell Wilson',
-        'Matt Schaub', 'Michael Vick', 'Brett Favre', 'Matt Cassel']
 
 if __name__ == '__main__':
-    model_maj = joblib.load('./majority.pkl')
-    model_rfc = joblib.load('./randomforest.pkl')
-    league_norm = pd.read_csv('./years.txt').to_dict()
-    lr_models = {qb:joblib.load(f'./{qb.replace(" ","")}-lr.pkl') for qb in qbs}
     app.run_server(debug=True)
