@@ -54,35 +54,6 @@ from app import app
 #layout = dbc.Row([column1, column2])
 
 layout = dbc.Col([
-    html.H1('Guess the QB!', style={'text-transform':'uppercase'}),
-    dbc.Row([
-        html.Span('??', id='season-prompt'),
-        html.Span('season', style={'padding-left':'0.25em'})
-    ], style={'font-size':'1.5em', 'width':'15em', 'margin':'0 auto'}),
-    dbc.Row([
-        html.Span('Passing:', style={'font-weight':'bold', 'text-transform':'uppercase', 'margin-right':'0.5em'}),
-        html.Span('??', id='completions-prompt'),
-        html.Span('/', style={'font-weight':'bold', 'padding':'0 0.5em'}),
-        html.Span('??', id='passatt-prompt'),
-        html.Span('??', id='passyards-prompt', style={'padding':'0 1em'}),
-        html.Span('??', id='passtds-prompt'),
-        html.Span(':', style={'font-weight':'bold', 'padding':'0 0.5em'}),
-        html.Span('??', id='ints-prompt')
-    ], style={'font-size':'1.5em', 'width':'15em', 'margin':'0 auto'}),
-    dbc.Row([
-        html.Span('Rushing:', style={'font-weight':'bold', 'text-transform':'uppercase', 'margin-right':'0.5em'}),
-        html.Span('??', id='rushatt-prompt'),
-        html.Span('/', style={'font-weight':'bold', 'padding':'0 0.5em'}),
-        html.Span('??', id='rushyards-prompt'),
-        html.Span('/', style={'font-weight':'bold', 'padding':'0 0.5em'}),
-        html.Span('??', id='rushtds-prompt')
-    ], style={'font-size':'1.5em', 'width':'15em', 'margin':'0 auto'}),
-    dbc.Row([
-        html.Span('??', id='sacks-prompt'),
-        html.Span('sacks,', style={'padding':'0 0.5em 0 0.25em'}),
-        html.Span('??', id='sackyards-prompt'),
-        html.Span('yards lost,', style={'padding':'0 0.5em 0 0.25em'}),
-        html.Span('??', id='fumbles-prompt'),
-        html.Span('fumbles', style={'padding-left':'0.25em'})
-    ], style={'font-size':'1.5em', 'width':'17em', 'margin':'0 auto'})
-], style={'text-align':'center'})
+    html.Button('Guess the QB!', id='trigger-game-round', style={'font-size':'2em','font-weight':'bold', 'text-transform':'uppercase', 'width':'10em', 'display':'block', 'margin':'0 auto'}),
+    html.Div(id='prompt-bucket', style={'font-size':'1.5em', 'width':'18em', 'margin':'1.5em auto'})
+])

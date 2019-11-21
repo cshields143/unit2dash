@@ -71,6 +71,7 @@ model_maj = joblib.load('./majority.pkl')
 list_maj = open('./byfreq.txt', 'r').read()
 model_rfc = joblib.load('./randomforest.pkl')
 league_norm = pd.read_csv('./years.txt').to_dict()
+data = pd.read_csv('./z-scored.txt')
 lr_models = {qb:joblib.load(f'./{qb.replace(" ","")}-lr.pkl') for qb in qbs}
 
 def standardize(val, name, d, i):
@@ -103,6 +104,48 @@ def display_page(pathname):
         return manual.layout
     else:
         return dcc.Markdown('## Page not found')
+
+# Pull random row from the data
+@app.callback(Output('prompt-bucket', 'children'),
+              [Input('trigger-game-round', 'n_clicks')])
+def rand_row(_):
+    row = data.sample().iloc[0];
+    return dbc.Col([
+        dbc.Row([
+            html.Span(row['season'], id='season-prompt'),
+            html.Span('season', style={'padding-left':'0.25em'})
+        ], style={'font-style':'italic'}),
+        dbc.Row([
+            html.Span('Passing:', style={'font-weight':'bold', 'text-transform':'uppercase', 'margin-right':'0.5em'}),
+            html.Span(row['completions'], id='completions-prompt'),
+            html.Span('/', style={'font-weight':'bold', 'padding':'0 0.5em'}),
+            html.Span(row['passatt'], id='passatt-prompt'),
+            html.Span(row['passyards'], id='passyards-prompt', style={'padding':'0 1em'}),
+            html.Span(row['passtds'], id='passtds-prompt'),
+            html.Span(':', style={'font-weight':'bold', 'padding':'0 0.5em'}),
+            html.Span(row['ints'], id='ints-prompt')
+        ]),
+        dbc.Row([
+            html.Span('Rushing:', style={'font-weight':'bold', 'text-transform':'uppercase', 'margin-right':'0.5em'}),
+            html.Span(row['rushatt'], id='rushatt-prompt'),
+            html.Span('/', style={'font-weight':'bold', 'padding':'0 0.5em'}),
+            html.Span(row['rushyards'], id='rushyards-prompt'),
+            html.Span('/', style={'font-weight':'bold', 'padding':'0 0.5em'}),
+            html.Span(row['rushtds'], id='rushtds-prompt')
+        ]),
+        dbc.Row([
+            html.Span(row['sacks'], id='sacks-prompt'),
+            html.Span('sack(s),', style={'padding':'0 0.5em 0 0.25em'}),
+            html.Span(row['sackyards'], id='sackyards-prompt'),
+            html.Span('yard(s) lost,', style={'padding':'0 0.5em 0 0.25em'}),
+            html.Span(row['fumbles'], id='fumbles-prompt'),
+            html.Span('fumble(s)', style={'padding-left':'0.25em'})
+        ]),
+        dbc.Row([
+            html.Span('Answer:', style={'font-weight':'bold', 'padding-right':'0.5em'}),
+            html.Span(row['player'], style={'width':'10em', 'background':'black', 'color':'black'})
+        ])
+    ])
 
 # Generate prediction from input data
 @app.callback(Output('manual-output', 'children'),
@@ -154,7 +197,7 @@ def calc_pred(_, seas, cmps, att, sacks, carries, pyds, syds, ryds, ptds, ints, 
     harry_pred = get_highest(get_scores(X, lr_models))
 
     # construct output
-    outputform = dbc.Col([
+    return dbc.Col([
       html.Div([
         html.Span('Tom:'),
         html.Span(' '),
@@ -202,7 +245,6 @@ def calc_pred(_, seas, cmps, att, sacks, carries, pyds, syds, ryds, ptds, ints, 
         'margin-bottom':'0.5em'
       })
     ])
-    return outputform
 
 # Run app server: https://dash.plot.ly/getting-started
 
