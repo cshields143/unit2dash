@@ -64,8 +64,21 @@ app.layout = html.Div([
 def standardize(val, name, d, i):
     return (val - d[f'{name}-mean'][i]) / d[f'{name}-std'][i]
 
-def check_logregs(row, sub=qbs):
-    probs = [lr_models[qb].predict_proba(row) for qb in lr_models]
+def ovr_lr(rows, models):
+    probs = [models[qb].predict_proba(rows)[0][0] for qb in models]
+    lbld = list(zip(models.keys(), probs))
+    sums = sum([x[1] for x in lbld])
+    divd = {x[0]:x[1]/sums for x in lbld}
+    return divd
+
+def get_scores(X, models):
+    scores = ovr_lr(X, models)
+    return scores
+
+def get_highest(scores):
+    maxi = max(scores.values())
+    qb = [k for k in scores if scores[k] == maxi][0]
+    return qb
 
 
 # URL Routing for Multi-Page Apps: https://dash.plot.ly/urls
@@ -126,6 +139,7 @@ def calc_pred(_, seas, cmps, att, sacks, carries, pyds, syds, ryds, ptds, ints, 
     X = [[touch_z, netper_z, nya_z, ypc_z, td_touch_z, to_touch_z]]
     tom_pred = model_maj.predict(X)[0]
     dick_pred = model_rfc.predict(X)[0]
+    harry_pred = get_highest(get_scores(X, lr_models))
 
     # construct output
     outputform = dbc.Col([
@@ -163,7 +177,7 @@ def calc_pred(_, seas, cmps, att, sacks, carries, pyds, syds, ryds, ptds, ints, 
       html.Div([
         html.Span('Harry:'),
         html.Span(' '),
-        html.Span('Ryan Fitzpatrick',
+        html.Span(harry_pred,
           id='harry-output',
           style={
             'color':'blue'
@@ -189,5 +203,5 @@ if __name__ == '__main__':
     model_maj = joblib.load('./majority.pkl')
     model_rfc = joblib.load('./randomforest.pkl')
     league_norm = pd.read_csv('./years.txt').to_dict()
-    lr_models = {qb:joblib.load(f'./{qb.replace(' ','')}-lr.pkl') for qb in qbs}
+    lr_models = {qb:joblib.load(f'./{qb.replace(" ","")}-lr.pkl') for qb in qbs}
     app.run_server(debug=True)
