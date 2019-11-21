@@ -68,6 +68,8 @@ layout = dbc.Col([
                 ], style={'background':'#ddd', 'border-bottom':'1px solid #666'}),
                 html.Tbody(id='score-output', style={'text-align':'center'})
             ])
-        ])
+        ]),
+        dbc.Col(id='options-output', style={'font-size':'1.5em', 'text-align':'center'}),
+        dbc.Col(id='guess-outputs', style={'font-size':'1.5em', 'text-transform':'uppercase', 'font-weight':'bold'})
     ])
 ])
