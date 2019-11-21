@@ -9,14 +9,14 @@ import joblib
 
 # Imports from this application
 from app import app, server
-from pages import index
+from pages import index, manual
 
 # Navbar docs: https://dash-bootstrap-components.opensource.faculty.ai/l/components/navbar
 navbar = dbc.NavbarSimple(
     brand='Who\'s That QB?',
     brand_href='/', 
     children=[
-        #dbc.NavItem(dcc.Link('Predictions', href='/predictions', className='nav-link')), 
+        dbc.NavItem(dcc.Link('Manual', href='/manual', className='nav-link')), 
         #dbc.NavItem(dcc.Link('Insights', href='/insights', className='nav-link')), 
         #dbc.NavItem(dcc.Link('Process', href='/process', className='nav-link')), 
     ],
@@ -67,6 +67,8 @@ app.layout = html.Div([
 def display_page(pathname):
     if pathname == '/':
         return index.layout
+    elif pathname == '/manual':
+        return manual.layout
     else:
         return dcc.Markdown('## Page not found')
 
@@ -118,5 +120,5 @@ def calc_pred(_, seas, game, cmps, att, sacks, carries, pyds, syds, ryds, ptds, 
 
 # Run app server: https://dash.plot.ly/getting-started
 if __name__ == '__main__':
-    model = joblib.load('./rfc.pkl')
+    #model = joblib.load('./rfc.pkl')
     app.run_server(debug=True)
