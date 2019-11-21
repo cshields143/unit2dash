@@ -9,7 +9,7 @@ from app import app
 
 yr_opts = [{'label':x, 'value':x} for x in range(2004,2020)]
 
-layout = dbc.Col([
+inputform = dbc.Col([
   html.H2('Manually enter game stats'),
   dbc.Row([
     dcc.Dropdown(
@@ -180,3 +180,54 @@ layout = dbc.Col([
     html.Button('PREDICT >>', id='trigger-manual-prediction')
   ])
 ])
+
+outputform = dbc.Col([
+  html.Div([
+    html.Span('Tom:'),
+    html.Span(' '),
+    html.Span('Drew Brees',
+      id='tom-output',
+      style={
+        'color':'red'
+      }
+    )
+  ], style={
+    'font-size':'2.5em',
+    'font-weight':'bold',
+    'text-transform':'uppercase',
+    'margin-bottom':'0.5em',
+    'margin-top':'1em'
+  }),
+  html.Div([
+    html.Span('Dick:'),
+    html.Span(' '),
+    html.Span('Eli Manning',
+      id='dick-output',
+      style={
+        'color':'green'
+      }
+    )
+  ], style={
+    'font-size':'2.5em',
+    'font-weight':'bold',
+    'text-transform':'uppercase',
+    'margin-bottom':'0.5em'
+  }),
+  html.Div([
+    html.Span('Harry:'),
+    html.Span(' '),
+    html.Span('Ryan Fitzpatrick',
+      id='harry-output',
+      style={
+        'color':'blue'
+      }
+    )
+  ], style={
+    'font-size':'2.5em',
+    'font-weight':'bold',
+    'text-transform':'uppercase',
+    'margin-bottom':'0.5em'
+  })
+])
+
+layout = dbc.Row([inputform, outputform])
