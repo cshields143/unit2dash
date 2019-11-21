@@ -61,6 +61,12 @@ app.layout = html.Div([
     footer
 ])
 
+def standardize(val, name, d, i):
+    return (val - d[f'{name}-mean'][i]) / d[f'{name}-std'][i]
+
+def check_logregs(row, sub=qbs):
+    probs = [lr_models[qb].predict_proba(row) for qb in lr_models]
+
 
 # URL Routing for Multi-Page Apps: https://dash.plot.ly/urls
 @app.callback(Output('page-content', 'children'),
@@ -106,13 +112,15 @@ def calc_pred(_, seas, cmps, att, sacks, carries, pyds, syds, ryds, ptds, ints, 
     to_touch = tos / touches
 
     # standardize stats by league year
+    def quick_stand(val, name):
+        return standardize(val, name, league_norm, i)
     i = [k for k in league_norm['year'] if league_norm['year'][k] == seas][0]
-    touch_z = (touches - league_norm['touches-mean'][i]) / league_norm['touches-std'][i]
-    netper_z = (netper - league_norm['net%-mean'][i]) / league_norm['net%-std'][i]
-    nya_z = (nya - league_norm['ny/a-mean'][i]) / league_norm['ny/a-std'][i]
-    ypc_z = (ypc - league_norm['ypc-mean'][i]) / league_norm['ypc-std'][i]
-    td_touch_z = (td_touch - league_norm['td:touch-mean'][i]) / league_norm['td:touch-std'][i]
-    to_touch_z = (to_touch - league_norm['to:touch-mean'][i]) / league_norm['to:touch-std'][i]
+    touch_z = quick_stand(touches, 'touches')
+    netper_z = quick_stand(netper, 'net%')
+    nya_z = quick_stand(nya, 'ny/a')
+    ypc_z = quick_stand(ypc, 'ypc')
+    td_touch_z = quick_stand(td_touch, 'td:touch')
+    to_touch_z = quick_stand(to_touch, 'to:touch')
 
     # get predictions
     X = [[touch_z, netper_z, nya_z, ypc_z, td_touch_z, to_touch_z]]
@@ -171,8 +179,15 @@ def calc_pred(_, seas, cmps, att, sacks, carries, pyds, syds, ryds, ptds, ints, 
     return outputform
 
 # Run app server: https://dash.plot.ly/getting-started
+qbs = ['Drew Brees', 'Eli Manning', 'Tom Brady', 'Philip Rivers', 'Ben Roethlisberger',
+        'Carson Palmer', 'Matt Ryan', 'Aaron Rodgers', 'Joe Flacco', 'Peyton Manning',
+        'Alex Smith', 'Jay Cutler', 'Matthew Stafford', 'Ryan Fitzpatrick',
+        'Matt Hasselbeck', 'Tony Romo', 'Andy Dalton', 'Cam Newton', 'Russell Wilson',
+        'Matt Schaub', 'Michael Vick', 'Brett Favre', 'Matt Cassel']
+
 if __name__ == '__main__':
     model_maj = joblib.load('./majority.pkl')
     model_rfc = joblib.load('./randomforest.pkl')
     league_norm = pd.read_csv('./years.txt').to_dict()
+    lr_models = {qb:joblib.load(f'./{qb.replace(' ','')}-lr.pkl') for qb in qbs}
     app.run_server(debug=True)
