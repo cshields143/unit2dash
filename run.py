@@ -105,6 +105,29 @@ def display_page(pathname):
     else:
         return dcc.Markdown('## Page not found')
 
+# Reset scores
+@app.callback(Output('score-output', 'children'),
+              [Input('trigger-score-clear', 'n_clicks')])
+def zero_scores(_):
+    return [
+        html.Tr([
+            html.Td('Tom'),
+            html.Td('0')
+        ]),
+        html.Tr([
+            html.Td('Dick'),
+            html.Td('0')
+        ]),
+        html.Tr([
+            html.Td('Harry'),
+            html.Td('0')
+        ]),
+        html.Tr([
+            html.Td('You!'),
+            html.Td('0')
+        ]),
+    ]
+
 # Pull random row from the data
 @app.callback(Output('prompt-bucket', 'children'),
               [Input('trigger-game-round', 'n_clicks')])
