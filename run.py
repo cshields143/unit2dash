@@ -134,15 +134,15 @@ def zero_scores(_):
     return [
         html.Tr([
             html.Td('Tom'),
-            html.Td('0')
+            html.Td('0', style={'color':'red'})
         ]),
         html.Tr([
             html.Td('Dick'),
-            html.Td('0')
+            html.Td('0', style={'color':'green'})
         ]),
         html.Tr([
             html.Td('Harry'),
-            html.Td('0')
+            html.Td('0', style={'color':'blue'})
         ]),
         html.Tr([
             html.Td('You!'),

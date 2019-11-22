@@ -43,5 +43,11 @@ document.body.addEventListener('click', ev => {
         b.disabled = false;
       });
     }
+  } else if (id === 'trigger-score-clear') {
+    const tbody = document.querySelector('#score-output');
+    const trs = tbody.querySelectorAll('tr');
+    [...trs].forEach(el => {
+      el.firstElementChild.nextElementSibling.textContent = 0;
+    });
   }
 });
