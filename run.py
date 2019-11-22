@@ -18,9 +18,7 @@ navbar = dbc.NavbarSimple(
     brand='Who\'s That QB?',
     brand_href='/', 
     children=[
-        dbc.NavItem(dcc.Link('Manual', href='/manual', className='nav-link')), 
-        #dbc.NavItem(dcc.Link('Insights', href='/insights', className='nav-link')), 
-        #dbc.NavItem(dcc.Link('Process', href='/process', className='nav-link')), 
+        dbc.NavItem(dcc.Link('Manual', href='/manual', className='nav-link')),
     ],
     sticky='top',
     color='light', 
@@ -199,7 +197,7 @@ def rand_row(_):
         ]),
         dbc.Row([
             html.Span('Answer:', style={'font-weight':'bold', 'padding-right':'0.5em'}),
-            html.Span(row['player'], style={'width':'10em', 'background':'black', 'color':'black'})
+            html.Span(row['player'], id='guess-answer', style={'width':'10em', 'background':'black', 'color':'black'})
         ])
     ]), [
         html.Button(options[0], id='opt-0-input', style={'margin':'0.25em 0.5em'}),
@@ -209,15 +207,15 @@ def rand_row(_):
     ], [
         dbc.Row([
             html.Span('Tom:', style={'margin-right':'0.5em'}),
-            html.Span(tompred, style={'color':'red'})
+            html.Span(tompred, id='tom-guess-output', style={'color':'red'})
         ], style={'margin-bottom':'0.75em'}),
         dbc.Row([
             html.Span('Dick:', style={'margin-right':'0.5em'}),
-            html.Span(dickpred, style={'color':'green'})
+            html.Span(dickpred, id='dick-guess-output', style={'color':'green'})
         ], style={'margin-bottom':'0.75em'}),
         dbc.Row([
             html.Span('Harry:', style={'margin-right':'0.5em'}),
-            html.Span(harrypred, style={'color':'blue'})
+            html.Span(harrypred, id='harry-guess-output', style={'color':'blue'})
         ])
     ]
 
