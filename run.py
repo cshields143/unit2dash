@@ -34,7 +34,7 @@ navbar = dbc.NavbarSimple(
 # mr (margin right) : https://getbootstrap.com/docs/4.3/utilities/spacing/
 # className='lead' : https://getbootstrap.com/docs/4.3/content/typography/#lead
 footer = dbc.Container(
-    dbc.Row(
+    dbc.Row([
         dbc.Col(
             html.P(
                 [
@@ -45,8 +45,13 @@ footer = dbc.Container(
                 ], 
                 className='lead'
             )
-        )
-    )
+        ),
+        dbc.Col([
+            html.P([
+                html.A(html.Img(src='../assets/lambda.png', width=80), href="https://lambdaschool.com/")
+            ], style={'text-align':'right'})
+        ])
+    ])
 )
 
 # Layout docs:
