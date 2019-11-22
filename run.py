@@ -11,14 +11,15 @@ import random
 
 # Imports from this application
 from app import app, server
-from pages import index, manual
+from pages import index, manual, walkthrough
 
 # Navbar docs: https://dash-bootstrap-components.opensource.faculty.ai/l/components/navbar
 navbar = dbc.NavbarSimple(
     brand='Who\'s That QB?',
     brand_href='/', 
     children=[
-        dbc.NavItem(dcc.Link('Manual', href='/manual', className='nav-link')),
+        dbc.NavItem(dcc.Link('Walkthrough', href='/walkthrough', className='nav-link')),
+        dbc.NavItem(dcc.Link('Manual', href='/manual', className='nav-link'))
     ],
     sticky='top',
     color='light', 
@@ -66,12 +67,12 @@ qbs = ['Drew Brees', 'Eli Manning', 'Tom Brady', 'Philip Rivers', 'Ben Roethlisb
        'Matt Hasselbeck', 'Tony Romo', 'Andy Dalton', 'Cam Newton', 'Russell Wilson',
        'Matt Schaub', 'Michael Vick', 'Brett Favre', 'Matt Cassel']
 
-model_maj = joblib.load('./majority.pkl')
-list_maj = open('./byfreq.txt', 'r').read().split('\n')
-model_rfc = joblib.load('./randomforest.pkl')
-league_norm = pd.read_csv('./years.txt').to_dict()
-data = pd.read_csv('./z-scored.txt')
-lr_models = {qb:joblib.load(f'./{qb.replace(" ","")}-lr.pkl') for qb in qbs}
+model_maj = joblib.load('assets/models/majority.pkl')
+list_maj = open('assets/data/byfreq.txt', 'r').read().split('\n')
+model_rfc = joblib.load('assets/models/randomforest.pkl')
+league_norm = pd.read_csv('assets/data/years.txt').to_dict()
+data = pd.read_csv('assets/data/standardized.txt')
+lr_models = {qb:joblib.load(f'assets/models/lrs/{qb.replace(" ","")}.pkl') for qb in qbs}
 
 def getrfcfrom(row, opts):
     X = [row[['touches', 'net%', 'ny/a', 'ypc', 'td:touch', 'to:touch']]]
@@ -124,6 +125,8 @@ def display_page(pathname):
         return index.layout
     elif pathname == '/manual':
         return manual.layout
+    elif pathname == '/walkthrough':
+        return walkthrough.layout
     else:
         return dcc.Markdown('## Page not found')
 
