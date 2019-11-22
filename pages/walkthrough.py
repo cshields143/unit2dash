@@ -13,7 +13,7 @@ column1 = dbc.Col([
   html.P('Who here doesn\'t have fond memories of sitting with friends, looking up random statistics, and trying to guess the player who put up those numbers? Ah, to be young again...'),
   dcc.Markdown('Now the classic game can go on **forever** thanks to the power of machine learning! And with access to [this project\'s source code](https://github.com/cshields143/unit2dash), including Jupyter notebooks, you can experiment with your own models and combinations of strategies!'),
   html.H2('Gathering & Wrangling the Data', style={'text-align':'center', 'font-weight':'bold', 'font-size':'1.75em', 'margin':'1em'}),
-  dcc.Markdown('Every QB game in the NFL from 2004 to 2019 (thru Week 11) was sourced from [Pro Football Reference](https://www.pro-football-reference.com/). Properly massaging this data proved crucial to success.'),
+  dcc.Markdown('Every QB game in the NFL from 2004 to 2019 (thru Week 11) was sourced from [Pro Football Reference](https://www.pro-football-reference.com/play-index/pgl_finder.cgi?request=1&match=game&year_min=2004&year_max=2019&season_start=1&season_end=-1&pos%5B%5D=QB&is_starter=E&game_type=E&league_id=NFL&career_game_num_min=1&career_game_num_max=400&qb_start_num_min=1&qb_start_num_max=400&game_num_min=0&game_num_max=99&week_num_min=0&week_num_max=99&c1stat=pass_att&c1comp=gt&c1val=0&c2stat=rush_att&c2comp=gt&c2val=0&c3stat=fumbles&c3comp=gt&c3val=0&c5val=1.0&order_by=game_date). Properly massaging this data proved crucial to success.'),
   html.P('For each quarterback in each game, the following stats were recorded:'),
   dbc.Row([
     dbc.Col(dcc.Markdown('''
