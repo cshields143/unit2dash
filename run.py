@@ -248,6 +248,7 @@ def calc_pred(_, seas, cmps, att, sacks, carries, pyds, syds, ryds, ptds, ints, 
     if _ == None: return
     
     # "advanced" stats
+    cmpper = cmps / att
     netatt = att + sacks
     netper = cmps / netatt
     netyds = pyds - syds
@@ -256,22 +257,25 @@ def calc_pred(_, seas, cmps, att, sacks, carries, pyds, syds, ryds, ptds, ints, 
     tds = ptds + rtds
     tos = ints + fums
     touches = netatt + carries
+    totyds = netyds + ryds
     td_touch = tds / touches
     to_touch = tos / touches
+    rs = ryds / totyds
 
     # standardize stats by league year
     def quick_stand(val, name):
         return standardize(val, name, league_norm, i)
     i = [k for k in league_norm['year'] if league_norm['year'][k] == seas][0]
     touch_z = quick_stand(touches, 'touches')
-    netper_z = quick_stand(netper, 'net%')
+    cmpper_z = quick_stand(cmpper, 'cmp%')
     nya_z = quick_stand(nya, 'ny/a')
     ypc_z = quick_stand(ypc, 'ypc')
+    rs_z = quick_stand(rs, 'rush-split')
     td_touch_z = quick_stand(td_touch, 'td:touch')
     to_touch_z = quick_stand(to_touch, 'to:touch')
 
     # get predictions
-    X = [[touch_z, netper_z, nya_z, ypc_z, td_touch_z, to_touch_z]]
+    X = [[touch_z, cmpper_z, nya_z, ypc_z, rs_z, td_touch_z, to_touch_z]]
     tom_pred = model_maj.predict(X)[0]
     dick_pred = model_rfc.predict(X)[0]
     harry_pred = get_highest(get_scores(X, lr_models))
