@@ -75,7 +75,7 @@ data = pd.read_csv('assets/data/standardized.txt')
 lr_models = {qb:joblib.load(f'assets/models/lrs/{qb.replace(" ","")}.pkl') for qb in qbs}
 
 def getrfcfrom(row, opts):
-    X = [row[['touches', 'net%', 'ny/a', 'ypc', 'td:touch', 'to:touch']]]
+    X = [row[['touches', 'cmp%', 'ny/a', 'ypc', 'rush-split', 'td:touch', 'to:touch']]]
     y_scores = model_rfc.predict_proba(X)[0]
     y_scores = list(zip(model_rfc.classes_, y_scores))
     y_scores = [y for y in y_scores if y[0] in opts]
@@ -111,7 +111,7 @@ def get_highest(scores):
     return qb
 
 def getlrfrom(row, opts):
-    X = [row[['touches', 'net%', 'ny/a', 'ypc', 'td:touch', 'to:touch']]]
+    X = [row[['touches', 'cmp%', 'ny/a', 'ypc', 'rush-split', 'td:touch', 'to:touch']]]
     models = {qb:lr_models[qb] for qb in lr_models if qb in opts}
     scores = get_scores(X, models)
     return get_highest(scores)
