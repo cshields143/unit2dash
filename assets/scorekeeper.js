@@ -29,7 +29,19 @@ document.body.addEventListener('click', ev => {
       if (tompred === answer) add2score('Tom');
       if (dickpred === answer) add2score('Dick');
       if (harrypred === answer) add2score('Harry');
-      document.querySelector('#options-output').innerHTML = 'Go again!';
+      const btns = document.querySelectorAll('#options-output button');
+      [...btns].forEach(b => {
+        b.disabled = true;
+      });
+    }
+  } else if (id === 'trigger-game-round') {
+    const answer_el = document.querySelector('#guess-answer');
+    const btns = document.querySelectorAll('#options-output button');
+    if (answer_el) {
+      answer_el.style.background = 'black';
+      [...btns].forEach(b => {
+        b.disabled = false;
+      });
     }
   }
 });
